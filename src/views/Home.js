@@ -18,6 +18,7 @@ const Home=()=>{
     const [contactData,setContactData] = useState([])
     const [isLoading,setIsLoading] = useState(false)
     const [addModalVisible,setAddModalVisible] = useState(false)
+    const [editModalVisible,setEditModalVisible] = useState(false)
     const [fullData, setFullData] = useState([]);
     const [query, setQuery] = useState('');    
 
@@ -25,6 +26,7 @@ const Home=()=>{
     const [ages,setAges] = useState('')
     const [firstName,setFirstName] = useState('')
     const [lastName,setLastName] = useState('')
+    const [userId,setUserId]= useState()
 
     useEffect(()=>{
         setIsLoading(true)
@@ -157,17 +159,26 @@ const Home=()=>{
                         data={contactData}
                         keyExtractor={ item =>item.id}
                         renderItem={({item})=>
-                            <View style={MainStyles.listItem}>
-                                <Image
-                                source={item.photo === 'N/A' ? require('../assets/blankimage.png'):{ uri: item.photo }}
-                                style={MainStyles.coverImage}
-                                resizeMode={'cover'}
-                                />
-                                <View style={MainStyles.metaInfo}>
-                                <Text style={MainStyles.title}>{item.firstName} {item.lastName}</Text>
-                                <Text style={MainStyles.subTitle}>Ages {item.age}</Text>
+                            <Pressable onPress={()=>{
+                                setUserId(item.id)
+                                setPhoto(item.photo)
+                                setFirstName(item.firstName)
+                                setLastName(item.lastName)
+                                setAges(item.age)
+                                setEditModalVisible(!editModalVisible)
+                            }} > 
+                                <View style={MainStyles.listItem}>
+                                    <Image
+                                    source={item.photo === 'N/A' ? require('../assets/blankimage.png'):{ uri: item.photo }}
+                                    style={MainStyles.coverImage}
+                                    resizeMode={'cover'}
+                                    />
+                                    <View style={MainStyles.metaInfo}>
+                                    <Text style={MainStyles.title}>{item.firstName} {item.lastName}</Text>
+                                    <Text style={MainStyles.subTitle}>Ages {item.age}</Text>
+                                    </View>
                                 </View>
-                            </View>
+                            </Pressable>
                         }
                         />
                         </>
@@ -240,7 +251,80 @@ const Home=()=>{
                         </View>
                         </View>
                     </Modal>
-                                            
+
+                    <Modal                                      
+                        transparent={true}
+                        visible={editModalVisible}
+                        onRequestClose={() => {            
+                        setEditModalVisible(!editModalVisible)
+                        }}
+                    >
+                        <View style={MainStyles.centeredView}>
+                        <View style={MainStyles.modalView}>                            
+                            <Image
+                                source={photo == null ? require('../assets/blankimage.png'): { uri: photo }}
+                                style={[MainStyles.coverImage,{marginVertical:12}]}
+                                resizeMode={'cover'}
+                            />
+                            
+                            <TextInput
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                clearButtonMode="always"
+                                value={firstName}                            
+                                onChangeText={text => setFirstName(text)}
+                                placeholder="First Name"
+                                textAlign={'center'}
+                                style={{ padding: 0,marginHorizontal:8,marginVertical:4}}
+                            />
+                            <TextInput
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                clearButtonMode="always"
+                                value={lastName}
+                                onChangeText={text => setLastName(text)}
+                                placeholder="Last Name"
+                                textAlign={'center'}
+                                style={{ padding: 0,marginHorizontal:8,marginVertical:4}}
+                            />                            
+                            <TextInput
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                clearButtonMode="always"
+                                value={ages}
+                                onChangeText={text => setAges(text)}
+                                placeholder="Ages"
+                                textAlign={'center'}
+                                style={{ padding: 0,marginHorizontal:8,marginVertical:4}}
+                                keyboardType={'number-pad'}
+                            />
+                            <View style={{borderBottomWidth:1,width:120,borderBottomColor:'#ddd'}}/>
+                            
+                            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                                
+                                <View style={{flexDirection:'row',alignItems:'center',marginTop:16}} >
+
+                                    <Pressable onPress={() => setEditModalVisible(!editModalVisible)}>
+                                        <Text style={{color:'#FF6347'}}>Delete</Text>
+                                    </Pressable>
+
+                                    <Pressable onPress={() => setEditModalVisible(!editModalVisible)}>
+                                        <Text style={{color:'#1256C2'}}>Cancle</Text>
+                                    </Pressable>
+
+                                    <Pressable onPress={()=>InputNewData()}>   
+                                        <View style={{marginLeft:16,backgroundColor:'#1256C2',paddingTop:4,paddingBottom:4,paddingLeft:8,paddingRight:8,borderRadius:8,alignItems:'center',justifyContent:'center'}} >
+                                            <Text style={{color:'#fff'}}>Save</Text>
+                                        </View>
+                                    </Pressable>
+
+                                </View>
+                            </View>
+
+                        </View>
+                        </View>
+                    </Modal>
+
                     <Pressable onPress={()=>{setAddModalVisible(!addModalVisible)}} style={MainStyles.addContainer}>
                         <Text style={MainStyles.addIcon}>+</Text>
                     </Pressable>                        
