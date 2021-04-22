@@ -23,10 +23,10 @@ const Home=()=>{
     const [query, setQuery] = useState('');    
 
     const [photo,setPhoto] = useState()
-    const [ages,setAges] = useState('')
+    const [ages,setAges] = useState()
     const [firstName,setFirstName] = useState('')
     const [lastName,setLastName] = useState('')
-    const [userId,setUserId]= useState()
+    const [userId,setUserId]= useState('')
 
     useEffect(()=>{
         setIsLoading(true)
@@ -101,6 +101,73 @@ const Home=()=>{
         
     }
 
+    async function DeleteData() {
+        try {
+            await fetch(`https://simple-contact-crud.herokuapp.com/contact/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    'Accept': 'application/json'
+                }
+              })
+              .then((response) => response.json())
+              .then((res) => {                  
+                if(res.message == "contact deleted"){
+                    
+                    fetchContactData()
+                    setEditModalVisible(!editModalVisible)
+                    ToastAndroid.showWithGravityAndOffset("Contact deleted!",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50)
+                }else{
+                    
+                    fetchContactData()
+                    setEditModalVisible(!editModalVisible)
+                    ToastAndroid.showWithGravityAndOffset("Failed to delete contact!",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50)
+                }                                                                                                                               
+                })
+                .done();                    
+
+          } catch(e) {            
+            console.log(e)
+            ToastAndroid.showWithGravityAndOffset("Network Error!",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50)
+        }
+    }
+    
+    async function UpdateData() {
+        try {
+            await fetch(`https://simple-contact-crud.herokuapp.com/contact/${userId}`, {
+                method: "PUT",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body:JSON.stringify({
+                    "firstName": firstName,
+                    "lastName": lastName,
+                    "age": ages,
+                    "photo": photo == null ? "N/A" : photo 
+                })
+              })
+              .then((response) => response.json())
+              .then((res) => {                         
+                if(res.message == "Contact edited"){
+                    
+                    fetchContactData()
+                    setEditModalVisible(!editModalVisible)
+                    ToastAndroid.showWithGravityAndOffset("Contact edited!",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50)
+                }else{
+                    
+                    fetchContactData()
+                    setEditModalVisible(!editModalVisible)
+                    ToastAndroid.showWithGravityAndOffset("Failed to edit contact!",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50)
+                }                                                                                                                               
+                })
+                .done();                    
+
+          } catch(e) {            
+            console.log(e)
+            ToastAndroid.showWithGravityAndOffset("Network Error!",ToastAndroid.LONG,ToastAndroid.BOTTOM,25,50)
+        }
+    }
+
     const handleSearch = text => {
         const formattedQuery = text.toLowerCase();
         const filteredData = filter(fullData, user => {
@@ -164,7 +231,7 @@ const Home=()=>{
                                 setPhoto(item.photo)
                                 setFirstName(item.firstName)
                                 setLastName(item.lastName)
-                                setAges(item.age)
+                                setAges(item.age.toString())
                                 setEditModalVisible(!editModalVisible)
                             }} > 
                                 <View style={MainStyles.listItem}>
@@ -193,7 +260,7 @@ const Home=()=>{
                         <View style={MainStyles.centeredView}>
                         <View style={MainStyles.modalView}>                            
                             <Image
-                                source={photo == null ? require('../assets/blankimage.png'): { uri: photo }}
+                                source={photo === "N/A" ? require('../assets/blankimage.png'): { uri: photo }}
                                 style={[MainStyles.coverImage,{marginVertical:12}]}
                                 resizeMode={'cover'}
                             />
@@ -262,7 +329,7 @@ const Home=()=>{
                         <View style={MainStyles.centeredView}>
                         <View style={MainStyles.modalView}>                            
                             <Image
-                                source={photo == null ? require('../assets/blankimage.png'): { uri: photo }}
+                                source={photo === "N/A" ? require('../assets/blankimage.png'): { uri: photo }}
                                 style={[MainStyles.coverImage,{marginVertical:12}]}
                                 resizeMode={'cover'}
                             />
@@ -304,15 +371,17 @@ const Home=()=>{
                                 
                                 <View style={{flexDirection:'row',alignItems:'center',marginTop:16}} >
 
-                                    <Pressable onPress={() => setEditModalVisible(!editModalVisible)}>
-                                        <Text style={{color:'#FF6347'}}>Delete</Text>
+                                    <Pressable onPress={() => DeleteData()}>
+                                        <View style={{marginRight:16,WpaddingTop:4,paddingBottom:4,alignItems:'center',justifyContent:'center'}} >
+                                            <Text style={{color:'#FF6347'}}>Delete</Text>
+                                        </View>
                                     </Pressable>
 
                                     <Pressable onPress={() => setEditModalVisible(!editModalVisible)}>
                                         <Text style={{color:'#1256C2'}}>Cancle</Text>
                                     </Pressable>
 
-                                    <Pressable onPress={()=>InputNewData()}>   
+                                    <Pressable onPress={()=>UpdateData()}>   
                                         <View style={{marginLeft:16,backgroundColor:'#1256C2',paddingTop:4,paddingBottom:4,paddingLeft:8,paddingRight:8,borderRadius:8,alignItems:'center',justifyContent:'center'}} >
                                             <Text style={{color:'#fff'}}>Save</Text>
                                         </View>
