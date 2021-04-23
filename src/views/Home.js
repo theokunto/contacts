@@ -9,7 +9,8 @@ import { View,
     Pressable,
     StatusBar,
     Modal,
-    TextInput} from 'react-native';
+    TextInput,
+    RefreshControl} from 'react-native';
 import { MainStyles } from "../styles";
 import filter from 'lodash.filter';
 import { add } from "react-native-reanimated";
@@ -236,7 +237,7 @@ const Home=()=>{
                             }} > 
                                 <View style={MainStyles.listItem}>
                                     <Image
-                                    source={item.photo === 'N/A' ? require('../assets/blankimage.png'):{ uri: item.photo }}
+                                    source={item.photo === 'N/A' ? require('../assets/blankimage.png'):{ uri:item.photo }}
                                     style={MainStyles.coverImage}
                                     resizeMode={'cover'}
                                     />
@@ -247,6 +248,11 @@ const Home=()=>{
                                 </View>
                             </Pressable>
                         }
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={isLoading}
+                                onRefresh={()=>{fetchContactData()}}
+                        />}
                         />
                         </>
                     }
@@ -394,7 +400,14 @@ const Home=()=>{
                         </View>
                     </Modal>
 
-                    <Pressable onPress={()=>{setAddModalVisible(!addModalVisible)}} style={MainStyles.addContainer}>
+                    <Pressable onPress={()=>{
+                        setPhoto('N/A')
+                        setFirstName('')
+                        setLastName('')
+                        setUserId()
+                        setAges()
+                        setAddModalVisible(!addModalVisible)                        
+                        }} style={MainStyles.addContainer}>
                         <Text style={MainStyles.addIcon}>+</Text>
                     </Pressable>                        
                     

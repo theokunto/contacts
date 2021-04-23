@@ -1,0 +1,9 @@
+com/contacts/MainApplication.java
+ com.contacts.MainApplication
+ com.contacts.MainApplication$1
+com/facebook/react/PackageList.java
+ com.facebook.react.PackageList
+com/contacts/BuildConfig.java
+ com.contacts.BuildConfig
+com/contacts/MainActivity.java
+ com.contacts.MainActivity

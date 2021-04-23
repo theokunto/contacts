@@ -1,0 +1,4 @@
+#Fri Apr 23 00:42:38 WIB 2021
+base.0=/home/theo/Documents/RN_Project/Contacts/android/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
